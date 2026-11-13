@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nexora — التسجيل في التيمات</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --primary:       #1e40af;
+      --primary-mid:   #2563eb;
+      --primary-light: #3b82f6;
+      --primary-glow:  rgba(37,99,235,0.18);
+      --accent:        #6366f1;
+      --accent-soft:   rgba(99,102,241,0.12);
+      --dark:          #0f1f38;
+      --dark-mid:      #14243a;
+      --surface:       #ffffff;
+      --surface-alt:   #f1f5f9;
+      --border:        rgba(148,163,184,0.35);
+      --border-focus:  #2563eb;
+      --text-main:     #0f1f38;
+      --text-muted:    #64748b;
+      --text-soft:     #94a3b8;
+      --success:       #059669;
+      --error:         #dc2626;
+      --radius-sm:     10px;
+      --radius-md:     14px;
+      --radius-lg:     20px;
+      --radius-xl:     28px;
+      --shadow-card:   0 20px 60px rgba(15,31,56,0.10), 0 4px 20px rgba(37,99,235,0.07);
+      --shadow-input:  0 1px 3px rgba(15,31,56,0.06);
+      --transition:    all 0.22s cubic-bezier(.4,0,.2,1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: linear-gradient(135deg, #e8f0fe 0%, #f0f4ff 35%, #eef2ff 65%, #dbeafe 100%);
+      min-height: 100vh;
+      color: var(--text-main);
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* ─── Animated Background Mesh ─── */
+    .bg-mesh {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .bg-mesh::before {
+      content: '';
+      position: absolute;
+      width: 700px; height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(37,99,235,0.14) 0%, transparent 70%);
+      top: -200px; left: -200px;
+      animation: orb1 14s ease-in-out infinite alternate;
+    }
+    .bg-mesh::after {
+      content: '';
+      position: absolute;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(99,102,241,0.11) 0%, transparent 70%);
+      bottom: -150px; right: -150px;
+      animation: orb2 18s ease-in-out infinite alternate;
+    }
+    @keyframes orb1 { from { transform: translate(0,0) scale(1); } to { transform: translate(60px,80px) scale(1.15); } }
+    @keyframes orb2 { from { transform: translate(0,0) scale(1); } to { transform: translate(-50px,-60px) scale(1.2); } }
+
+    /* ─── Dot Grid Pattern ─── */
+    .dot-grid {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image: radial-gradient(rgba(37,99,235,0.13) 1.2px, transparent 1.2px);
+      background-size: 28px 28px;
+    }
+
+    /* ─── Watermark Logo ─── */
+    .watermark-wrap {
+      position: fixed; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      pointer-events: none; z-index: 0; overflow: hidden; user-select: none;
+    }
+    .watermark-wrap img {
+      width: clamp(260px, 50vw, 520px);
+      object-fit: contain;
+      opacity: 0.055;
+      filter: grayscale(0.3) blur(0.5px);
+      transform: rotate(-6deg) scale(1.05);
+    }
+
+    /* ─── Header ─── */
+    .site-header {
+      position: relative; z-index: 20;
+      width: 100%; max-width: 740px;
+      margin: 0 auto;
+      padding: 28px 24px 12px;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    }
+    .header-logo-wrap { display: flex; align-items: center; gap: 10px; }
+    .header-logo-wrap img { height: 42px; width: auto; object-fit: contain; }
+    .header-badge {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.04em;
+      color: var(--primary-mid);
+      background: rgba(37,99,235,0.1);
+      border: 1px solid rgba(37,99,235,0.22);
+      padding: 5px 14px; border-radius: 50px;
+      white-space: nowrap;
+    }
+
+    /* ─── Main Card ─── */
+    .form-card {
+      position: relative; z-index: 10;
+      background: rgba(255,255,255,0.72);
+      backdrop-filter: blur(28px) saturate(1.6);
+      -webkit-backdrop-filter: blur(28px) saturate(1.6);
+      border: 1.5px solid rgba(255,255,255,0.75);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-card), inset 0 1px 0 rgba(255,255,255,0.9);
+      padding: 44px 48px;
+      width: 100%; max-width: 740px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+    .form-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.1) 100%);
+      border-radius: inherit;
+      pointer-events: none;
+    }
+
+    /* Inner watermark on card */
+    .card-watermark {
+      position: absolute;
+      bottom: -30px; left: -30px;
+      width: 240px; height: 240px;
+      pointer-events: none; user-select: none;
+      opacity: 0.04;
+      filter: grayscale(1);
+      transform: rotate(10deg);
+    }
+
+    /* ─── Form Header ─── */
+    .form-header { margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1.5px solid rgba(148,163,184,0.2); }
+    .form-header h1 {
+      font-size: clamp(1.4rem, 3vw, 1.85rem);
+      font-weight: 900; color: var(--dark);
+      line-height: 1.3; margin-bottom: 8px;
+      background: linear-gradient(135deg, var(--dark) 0%, var(--primary) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .form-header p { font-size: 0.875rem; color: var(--text-muted); line-height: 1.75; }
+
+    /* ─── Labels ─── */
+    label.field-label {
+      display: block; font-size: 0.8125rem; font-weight: 700;
+      color: var(--dark-mid); margin-bottom: 7px; letter-spacing: 0.01em;
+    }
+    label.field-label .req { color: #ef4444; margin-right: 2px; }
+    label.field-label .opt {
+      font-size: 0.7rem; font-weight: 500;
+      color: var(--text-soft); margin-right: 4px;
+    }
+
+    /* ─── Input Wrapper (icon support) ─── */
+    .input-wrap { position: relative; }
+    .input-icon {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      right: 13px; width: 18px; height: 18px;
+      color: var(--text-soft); pointer-events: none;
+      transition: color 0.2s;
+    }
+    .input-wrap:focus-within .input-icon { color: var(--primary-mid); }
+    .input-icon-ltr { right: auto; left: 13px; }
+
+    /* ─── Base Input / Select / Textarea ─── */
+    .field {
+      width: 100%;
+      padding: 11px 42px 11px 14px;
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--border);
+      background: rgba(248,250,252,0.6);
+      color: var(--text-main);
+      font-family: 'Cairo', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 500;
+      box-shadow: var(--shadow-input);
+      transition: var(--transition);
+      outline: none;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    .field::placeholder { color: var(--text-soft); font-weight: 400; }
+    .field:hover { border-color: rgba(99,102,241,0.4); background: rgba(248,250,252,0.85); }
+    .field:focus {
+      border-color: var(--border-focus);
+      background: rgba(255,255,255,0.95);
+      box-shadow: 0 0 0 4px rgba(37,99,235,0.12), var(--shadow-input);
+    }
+    .field.ltr-field { direction: ltr; text-align: left; padding-right: 14px; padding-left: 42px; }
+
+    /* Select arrow */
+    .select-wrap { position: relative; }
+    .select-wrap::after {
+      content: '';
+      position: absolute; top: 50%; transform: translateY(-50%);
+      left: 14px; width: 0; height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 6px solid var(--text-soft);
+      pointer-events: none;
+      transition: border-color 0.2s;
+    }
+    .select-wrap:focus-within::after { border-top-color: var(--primary-mid); }
+
+    textarea.field { resize: vertical; min-height: 90px; padding-top: 12px; padding-bottom: 12px; }
+
+    /* ─── Radio Cards ─── */
+    .radio-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .radio-card {
+      display: flex; align-items: center; gap: 12px;
+      padding: 13px 16px;
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--border);
+      background: rgba(248,250,252,0.6);
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+    }
+    .radio-card:hover { border-color: rgba(37,99,235,0.45); background: rgba(237,242,254,0.6); }
+    .radio-card:has(input:checked) {
+      border-color: var(--primary-mid);
+      background: rgba(219,234,254,0.5);
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+    }
+    .radio-card input[type="radio"] {
+      width: 17px; height: 17px; accent-color: var(--primary-mid);
+      flex-shrink: 0; cursor: pointer;
+    }
+    .radio-card span { font-size: 0.84rem; font-weight: 600; color: var(--dark-mid); }
+
+    /* ─── Helper text ─── */
+    .field-hint { margin-top: 5px; font-size: 0.72rem; color: var(--text-soft); }
+
+    /* ─── Error Box ─── */
+    .error-box {
+      display: none; margin-bottom: 20px;
+      padding: 14px 18px;
+      border-radius: var(--radius-md);
+      background: rgba(254,226,226,0.7);
+      border: 1.5px solid rgba(220,38,38,0.25);
+      color: #b91c1c; font-size: 0.84rem; font-weight: 600;
+      backdrop-filter: blur(8px);
+    }
+    .error-box.show { display: block; }
+
+    /* ─── Submit Button ─── */
+    .btn-submit {
+      width: 100%;
+      padding: 15px 24px;
+      border-radius: var(--radius-md);
+      border: none; cursor: pointer;
+      font-family: 'Cairo', sans-serif;
+      font-size: 1rem; font-weight: 800;
+      color: #fff;
+      background: linear-gradient(135deg, var(--dark) 0%, var(--primary) 100%);
+      box-shadow: 0 4px 18px rgba(37,99,235,0.35), 0 2px 6px rgba(15,31,56,0.2);
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      transition: var(--transition);
+      position: relative; overflow: hidden;
+    }
+    .btn-submit::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%);
+      border-radius: inherit;
+    }
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(37,99,235,0.42), 0 2px 8px rgba(15,31,56,0.18);
+    }
+    .btn-submit:active { transform: translateY(0) scale(0.99); }
+    .btn-submit:disabled { opacity: 0.72; cursor: not-allowed; transform: none; }
+
+    /* ─── Success Card ─── */
+    .success-card { display: none; text-align: center; padding: 24px 0; }
+    .success-card.show { display: block; }
+    .success-icon {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+      border: 2px solid rgba(5,150,105,0.25);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px;
+      box-shadow: 0 4px 16px rgba(5,150,105,0.2);
+    }
+    .success-icon svg { width: 30px; height: 30px; color: var(--success); }
+    .success-card h2 {
+      font-size: 1.45rem; font-weight: 900; color: var(--dark); margin-bottom: 10px;
+    }
+    .success-card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.75; max-width: 400px; margin: 0 auto 18px; }
+    .token-badge {
+      display: inline-block;
+      padding: 7px 18px; border-radius: 50px;
+      background: rgba(241,245,249,0.9);
+      border: 1.5px solid var(--border);
+      font-size: 0.78rem; color: var(--text-muted);
+      margin-bottom: 22px;
+    }
+    .token-badge span { color: var(--dark); font-weight: 800; letter-spacing: 0.08em; }
+    .btn-telegram {
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      padding: 14px 32px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+      color: #fff; font-family: 'Cairo', sans-serif;
+      font-size: 0.95rem; font-weight: 800;
+      text-decoration: none;
+      box-shadow: 0 4px 18px rgba(37,99,235,0.35);
+      transition: var(--transition);
+    }
+    .btn-telegram:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(37,99,235,0.42);
+    }
+
+    /* ─── Footer ─── */
+    .site-footer {
+      position: relative; z-index: 10;
+      padding: 20px; text-align: center;
+      font-size: 0.75rem; color: var(--text-soft);
+    }
+
+    /* ─── Spacing utility ─── */
+    .form-fields { display: flex; flex-direction: column; gap: 20px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .field-group { display: flex; flex-direction: column; }
+
+    /* ─── Spinner ─── */
+    .spinner {
+      display: none; width: 20px; height: 20px;
+      border: 2.5px solid rgba(255,255,255,0.3);
+      border-top-color: #fff; border-radius: 50%;
+      animation: spin 0.75s linear infinite;
+    }
+    .spinner.show { display: block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 600px) {
+      .form-card { padding: 28px 20px; border-radius: var(--radius-lg); }
+      .grid-2 { grid-template-columns: 1fr; gap: 14px; }
+      .radio-grid { grid-template-columns: 1fr; }
+      .site-header { padding: 20px 16px 8px; }
+      .header-logo-wrap img { height: 34px; }
+    }
+
+    /* ─── Scroll margin for fields ─── */
+    .field-group { scroll-margin-top: 20px; }
+  </style>
+</head>
+<body>
+
+  <!-- Background layers -->
+  <div class="bg-mesh" aria-hidden="true"></div>
+  <div class="dot-grid" aria-hidden="true"></div>
+
+  <!-- Full-page Watermark Logo -->
+  <div class="watermark-wrap" aria-hidden="true">
+    <img src="./شعار نيكسورا التقني العصري.png" alt="" />
+  </div>
+
+  <!-- ═══ HEADER ═══ -->
+  <header class="site-header">
+    <div class="header-logo-wrap">
+      <img id="header-logo-img"
+        src="./شعار نيكسورا التقني العصري.png" alt=""
+        onerror="this.style.display='none'; document.getElementById('header-logo-fallback').removeAttribute('hidden');" />
+      <div id="header-logo-fallback" style="display:none;align-items:center;gap:10px;">
+        <div style="width:38px;height:38px;border-radius:10px;background:var(--dark);display:flex;align-items:center;justify-content:center;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 19V5l7 8 7-8v14" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══ MAIN ═══ -->
+  <main style="position:relative;z-index:10;width:100%;padding:8px 16px 48px;">
+    <div class="form-card">
+
+      <!-- Card inner watermark -->
+      <img class="card-watermark" src="./شعار نيكسورا التقني العصري.png" alt="" aria-hidden="true" />
+
+      <!-- Form Header -->
+      <div id="form-header" class="form-header">
+        <h1>استمارة تقييم وتوزيع التيمات</h1>
+        <p>سجل بياناتك بدقة عشان نوزعك في تيم من 5 أفراد يناسب مستواك، وبعد الإرسال فعّل بوت تيليجرام عشان يوصلك لينك تيمك.</p>
+      </div>
+
+      <!-- Error Box -->
+      <div id="error-box" class="error-box" role="alert" aria-live="polite"></div>
+
+      <!-- ═══ FORM ═══ -->
+      <form id="nexora-form" class="form-fields" novalidate>
+
+        <!-- Row 1: Full Name + WhatsApp -->
+        <div class="grid-2">
+          <div class="field-group">
+            <label for="full_name" class="field-label">الاسم ثلاثي <span class="req">*</span></label>
+            <div class="input-wrap">
+              <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <circle cx="12" cy="8" r="4"/><path stroke-linecap="round" stroke-linejoin="round" d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+              </svg>
+              <input id="full_name" name="full_name" type="text" required
+                placeholder="مثال: أحمد محمد محمود"
+                class="field" />
+            </div>
+          </div>
+          <div class="field-group">
+            <label for="whatsapp" class="field-label">رقم الواتساب <span class="req">*</span></label>
+            <div class="input-wrap">
+              <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/>
+              </svg>
+              <input id="whatsapp" name="whatsapp" type="tel" required
+                placeholder="010xxxxxxxx"
+                class="field" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 2: Telegram + GitHub -->
+        <div class="grid-2">
+          <div class="field-group">
+            <label for="telegram_username" class="field-label">يوزر تيليجرام <span class="req">*</span></label>
+            <div class="input-wrap">
+              <svg class="input-icon input-icon-ltr" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="color:var(--text-soft);">
+                <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
+              </svg>
+              <input id="telegram_username" name="telegram_username" type="text" required
+                dir="ltr" placeholder="@username"
+                class="field ltr-field" />
+            </div>
+          </div>
+          <div class="field-group">
+            <label for="github_url" class="field-label">
+              رابط GitHub
+              <span class="opt">(اختياري)</span>
+            </label>
+            <div class="input-wrap">
+              <svg class="input-icon input-icon-ltr" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="color:var(--text-soft);">
+                <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"/>
+              </svg>
+              <input id="github_url" name="github_url" type="url"
+                dir="ltr" placeholder="https://github.com/username"
+                class="field ltr-field" />
+            </div>
+            <p class="field-hint">لو انت لسه أساسيات متكتبش حاجة.</p>
+          </div>
+        </div>
+
+        <!-- Row 3: Goal Type Radio -->
+        <div class="field-group">
+          <label class="field-label">هل انت لسه هتتعلم أساسيات ولا هتخش تيم مشاريع؟ <span class="req">*</span></label>
+          <div class="radio-grid">
+            <label class="radio-card">
+              <input type="radio" name="goal_type" value="لسه هتعلم أساسيات" required />
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="color:var(--primary-mid);flex-shrink:0;">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/>
+              </svg>
+              <span>لسه هتعلم أساسيات</span>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="goal_type" value="جاهز أدخل تيم مشاريع" required />
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="color:var(--primary-mid);flex-shrink:0;">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"/>
+              </svg>
+              <span>جاهز أدخل تيم مشاريع</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field-group">
+            <label for="skill_level" class="field-label">مستواك واصل لفين؟ <span class="req">*</span></label>
+            <div class="select-wrap">
+              <svg class="input-icon" style="right:13px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+              </svg>
+              <select id="skill_level" name="skill_level" required class="field">
+                <option value="" disabled selected>اختر مستواك</option>
+                <option value="1 - لسه في البداية">1 - لسه في البداية</option>
+                <option value="2 - خلصت أساسيات وببدأ في التراك">2 - خلصت أساسيات وببدأ في التراك</option>
+                <option value="3 - عملت مشاريع صغيرة">3 - عملت مشاريع صغيرة</option>
+                <option value="4 - عملت مشاريع كاملة وجاهز للتيم">4 - عملت مشاريع كاملة وجاهز للتيم</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-group">
+            <label for="learning_duration" class="field-label">بدأت تتعلم من كام فترة؟ <span class="req">*</span></label>
+            <div class="select-wrap">
+              <svg class="input-icon" style="right:13px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2"/>
+              </svg>
+              <select id="learning_duration" name="learning_duration" required class="field">
+                <option value="" disabled selected>اختر المدة</option>
+                <option value="لسه ببدأ">لسه ببدأ</option>
+                <option value="أقل من 3 شهور">أقل من 3 شهور</option>
+                <option value="من 3 لـ 6 شهور">من 3 لـ 6 شهور</option>
+                <option value="من 6 شهور لسنة">من 6 شهور لسنة</option>
+                <option value="أكتر من سنة">أكتر من سنة</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label for="track_details" class="field-label">التراك بتاعك بالتفصيل إيه؟ <span class="req">*</span></label>
+          <div class="input-wrap">
+            <svg class="input-icon" style="top:16px;transform:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"/>
+            </svg>
+            <textarea id="track_details" name="track_details" rows="3" required
+              placeholder="مثال: Frontend (HTML, CSS, JS, React) أو Backend (Node.js / PHP) أو لسه ببدأ أساسيات"
+              class="field"
+              style="padding-right:42px;"></textarea>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button id="submit-btn" type="submit" class="btn-submit">
+          <span id="btn-text">إرسال البيانات</span>
+          <svg id="btn-spinner" class="spinner" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+          </svg>
+        </button>
+      </form>
+
+      <!-- ═══ SUCCESS CARD ═══ -->
+      <div id="success-card" class="success-card" role="status">
+        <div class="success-icon">
+          <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+        <h2>تم تسجيل بياناتك بنجاح 🎉</h2>
+        <p>اضغط على الزرار ده واضغط <strong style="color:var(--primary-mid);">Start</strong> في البوت عشان يوصلك لينك جروب التيم بتاعك أول ما التوزيع يخلص.</p>
+        <div class="token-badge">
+          كود التسجيل: <span id="user-token-display"></span>
+        </div>
+        <div>
+          <a id="telegram-deep-link" href="#" target="_blank" rel="noopener noreferrer" class="btn-telegram">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z" />
+            </svg>
+            تفعيل استلام التيم على تيليجرام
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    Nexora &copy; 2026 &nbsp;·&nbsp; جميع الحقوق محفوظة
+  </footer>
+
+  <script>
+    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyVQFAjsq9GJNPSZNYgBnO0HBqV7I2z6EqFY1vMvfDsJFSwffUcrEBUWQlg7a1el9UBPA/exec';
+    const BOT_USERNAME = '9234621049:AAGe5RjeK01_GEMjs0J49LlVNYQqfJNu_6Q';
+
+    const form = document.getElementById('nexora-form');
+    const formHeader = document.getElementById('form-header');
+    const errorBox = document.getElementById('error-box');
+    const submitBtn = document.getElementById('submit-btn');
+    const btnText = document.getElementById('btn-text');
+    const btnSpinner = document.getElementById('btn-spinner');
+    const successCard = document.getElementById('success-card');
+    const tokenDisplay = document.getElementById('user-token-display');
+    const telegramLink = document.getElementById('telegram-deep-link');
+
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      errorBox.classList.remove('show');
+      submitBtn.disabled = true;
+      btnText.textContent = 'جاري الإرسال...';
+      btnSpinner.classList.add('show');
+
+      const formData = new FormData(form);
+      const payload = {
+        full_name: (formData.get('full_name') || '').trim(),
+        whatsapp: (formData.get('whatsapp') || '').trim(),
+        telegram_username: (formData.get('telegram_username') || '').trim(),
+        github_url: (formData.get('github_url') || '').trim(),
+        goal_type: formData.get('goal_type') || '',
+        skill_level: formData.get('skill_level') || '',
+        learning_duration: formData.get('learning_duration') || '',
+        track_details: (formData.get('track_details') || '').trim()
+      };
+
+      try {
+        const res = await fetch(WEB_APP_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload)
+        });
+        const result = await res.json();
+
+        if (result.status === 'success' && result.token) {
+          form.classList.add('hidden');
+          formHeader.classList.add('hidden');
+          tokenDisplay.textContent = result.token;
+          telegramLink.href = 'https://t.me/' + BOT_USERNAME + '?start=' + encodeURIComponent(result.token);
+          successCard.classList.add('show');
+        } else {
+          throw new Error(result.message || 'تعذر حفظ البيانات');
+        }
+      } catch (err) {
+        errorBox.textContent = 'حدث خطأ أثناء الإرسال، تأكد من اتصالك بالإنترنت وحاول مرة أخرى.';
+        errorBox.classList.add('show');
+        submitBtn.disabled = false;
+        btnText.textContent = 'إرسال البيانات';
+        btnSpinner.classList.remove('show');
+      }
+    });
+  </script>
+</body>
+</html>
