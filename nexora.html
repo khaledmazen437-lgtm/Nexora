@@ -50,7 +50,6 @@
       position: relative;
     }
 
-    /* ─── Animated Background Mesh ─── */
     .bg-mesh {
       position: fixed;
       inset: 0;
@@ -86,7 +85,6 @@
       background-size: 28px 28px;
     }
 
-    /* ─── Watermark Logo ─── */
     .watermark-wrap {
       position: fixed; inset: 0;
       display: flex; align-items: center; justify-content: center;
@@ -100,7 +98,6 @@
       transform: rotate(-6deg) scale(1.05);
     }
 
-    /* ─── Header ─── */
     .site-header {
       position: relative; z-index: 20;
       width: 100%; max-width: 740px;
@@ -185,7 +182,6 @@
     .input-wrap:focus-within .input-icon { color: var(--primary-mid); }
     .input-icon-ltr { right: auto; left: 13px; }
 
-    /* ─── Base Input / Select / Textarea ─── */
     .field {
       width: 100%;
       padding: 11px 42px 11px 14px;
@@ -211,7 +207,6 @@
     }
     .field.ltr-field { direction: ltr; text-align: left; padding-right: 14px; padding-left: 42px; }
 
-    /* Select arrow */
     .select-wrap { position: relative; }
     .select-wrap::after {
       content: '';
@@ -372,16 +367,13 @@
 </head>
 <body>
 
-  <!-- Background layers -->
   <div class="bg-mesh" aria-hidden="true"></div>
   <div class="dot-grid" aria-hidden="true"></div>
 
-  <!-- Full-page Watermark Logo -->
   <div class="watermark-wrap" aria-hidden="true">
     <img src="./شعار نيكسورا التقني العصري.png" alt="" />
   </div>
 
-  <!-- ═══ HEADER ═══ -->
   <header class="site-header">
     <div class="header-logo-wrap">
       <img id="header-logo-img"
@@ -550,14 +542,13 @@
         </button>
       </form>
 
-      <!-- ═══ SUCCESS CARD ═══ -->
       <div id="success-card" class="success-card" role="status">
         <div class="success-icon">
           <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        <h2>تم تسجيل بياناتك بنجاح 🎉</h2>
+        <h2>تم تسجيل بياناتك بنجاح </h2>
         <p>اضغط على الزرار ده واضغط <strong style="color:var(--primary-mid);">Start</strong> في البوت عشان يوصلك لينك جروب التيم بتاعك أول ما التوزيع يخلص.</p>
         <div class="token-badge">
           كود التسجيل: <span id="user-token-display"></span>
@@ -581,7 +572,7 @@
 
   <script>
     const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyVQFAjsq9GJNPSZNYgBnO0HBqV7I2z6EqFY1vMvfDsJFSwffUcrEBUWQlg7a1el9UBPA/exec';
-    const BOT_USERNAME = '9234621049:AAGe5RjeK01_GEMjs0J49LlVNYQqfJNu_6Q';
+    const BOT_USERNAME = 'Nexora2026MEGA_bot';
 
     const form = document.getElementById('nexora-form');
     const formHeader = document.getElementById('form-header');
